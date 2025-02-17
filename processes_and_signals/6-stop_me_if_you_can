@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# This script stops the 4-to_infinity_and_beyond.sh process without using kill or killall.
+# Bash script that stops 4-to_infinity_and_beyond process changing the script from kill to pkill
 
-pid=$(pgrep -o -f "4-to_infinity_and_beyond.sh")  # Get the oldest process ID
-
-if [[ -n "$pid" ]]; then
-    echo "Stopping process $pid..."
-    echo "" > "/proc/$pid/cmdline"  # Overwrite cmdline to disrupt execution
-fi
+pkill -f 4-to_infinity_and_beyond
