@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# This script displays the PID and process name of processes whose name contains "bash".
+# shellcheck disable=SC2009
+grep -E 'bash' /proc/*/cmdline 2>/dev/null | awk -F'/' '{print $3, $0}' | awk '{print $1, "bash"}'
