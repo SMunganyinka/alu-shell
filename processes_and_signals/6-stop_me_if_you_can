@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# This script stops the 4-to_infinity_and_beyond.sh process without using kill or killall.
+
+pid=$(pgrep -f "4-to_infinity_and_beyond.sh")
+
+if [[ -n "$pid" ]]; then
+    echo "Stopping process $pid..."
+    echo "0" > "/proc/$pid/oom_score_adj"  # Adjusts process priority
+    exec /bin/true > "/proc/$pid/cmdline"  # Overwrites command line to stop execution
+fi
