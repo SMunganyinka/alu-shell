@@ -1,39 +1,29 @@
 #!/usr/bin/env bash
-# Manages "my process"
+# my process
 
+command="$1"
 
-PID_FILE="/var/run/my_process.pid"
-PROCESS_SCRIPT="/alu-shell/processes_and_signals/manage_my_process"  
+if [ -z "$command" ]; then
+  echo "Usage: manage_my_process {start|stop|restart}"
+  exit
+fi
 
-case "$1" in
-    start)
-        if [ -f "$PID_FILE" ]; then
-            echo "manage_my_process is already running"
-            exit 1
-        fi
-        nohup bash "$PROCESS_SCRIPT" &> /dev/null &
-        echo $! > "$PID_FILE"
-        echo "manage_my_process started"
-        ;;
+if [ "$command" == "start" ]; then
 
-    stop)
-        if [ -f "$PID_FILE" ]; then
-            kill "$(cat "$PID_FILE")" && rm -f "$PID_FILE"
-            echo "manage_my_process stopped"
-        else
-            echo "manage_my_process is not running"
-            exit 1
-        fi
-        ;;
+  bash ./manage_my_process &
+  echo "$!" > /var/run/my_process.pid
+  echo "manage_my_process started"
 
-    restart)
-        $0 stop > /dev/null 2>&1
-        $0 start > /dev/null 2>&1
-        echo "manage_my_process restarted"
-        ;;
+elif [ "$command" == "stop" ]; then
+  [ -e "/var/run/my_process.pid" ] && pkill -f './manage_my_process' && rm /var/run/my_process.pid
+  echo "manage_my_process stopped"
 
-    *)
-        echo "Usage: manage_my_process {start|stop|restart}"
-        exit 1
-        ;;
-esac
+elif [ "$command" == "restart" ]; then
+
+  "$0" stop >& /dev/null
+  "$0" start >& /dev/null
+  echo "manage_my_process restarted"
+
+else
+  echo "Usage: manage_my_process {start|stop|restart}" 
+fi

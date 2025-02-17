@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
-#manage_my_process script with logging
-echo "Process started at $(date)" >> /tmp/my_process.log
+# Function to write "I am alive!" to the file /tmp/my_process
+write_alive_message() {
+    while true; do
+        echo "I am alive!" >> /tmp/my_process
+        sleep 2
+    done
+}
 
-# Ensure this script replaces the shell process to avoid showing 'bash'
-exec > /dev/null 2>&1
-exec -a manage_my_process bash -c 'while true; do echo "I am alive!" >> /tmp/my_process; sleep 2; done'
+# Write PID to /var/run/my_process.pid
+echo $$ > /var/run/my_process.pid
+
+# Start writing the "I am alive!" messages
+write_alive_message
