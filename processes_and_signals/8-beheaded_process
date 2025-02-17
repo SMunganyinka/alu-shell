@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# This script kills the 7-highlander.sh process.
+
+pid=$(pgrep -o -f "7-highlander.sh")  # Get the oldest process ID of 7-highlander
+
+if [[ -n "$pid" ]]; then
+    kill "$pid"  # Send SIGTERM to terminate the process
+    echo "Killed"
+fi
