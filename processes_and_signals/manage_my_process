@@ -1,7 +1,8 @@
-#!/usr/bin/env bash
-#manage_my_process script with logging
-echo "Process started at $(date)" >> /tmp/my_process.log
+#!/bin/bash
+# This script indefinitely writes "I am alive!" to /tmp/my_process
 
-# Ensure this script replaces the shell process to avoid showing 'bash'
-exec > /dev/null 2>&1
-exec -a manage_my_process bash -c 'while true; do echo "I am alive!" >> /tmp/my_process; sleep 2; done'
+while true; do
+    echo "I am alive!" >> /tmp/my_process
+    sleep 2
+done
+
