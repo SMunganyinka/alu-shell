@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# This script prints "To infinity and beyond" indefinitely, 
+# but when it receives a SIGTERM signal, it prints "I am invincible!!!" instead of exiting.
+
+trap 'echo "I am invincible!!!"' SIGTERM  # Catch SIGTERM and print a message instead of stopping
+
+while true; do
+    echo "To infinity and beyond"
+    sleep 2
+done
