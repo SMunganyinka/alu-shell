@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#this is code for 11 code
+PID_FILE="/var/run/my_process.pid"
+LOG_FILE="/tmp/my_process.log"
+OUTPUT_FILE="/tmp/my_process"
+
+start_process() {
+    if [ -f "$PID_FILE" ]; then
+        echo "manage_my_process is already running"
+        exit 1
+    fi
+
+    echo "Process started at $(date)" >> "$LOG_FILE"
+    
+    nohup bash -c '
+        exec > /dev/null 2>&1
+        echo $$ > /var/run/my_process.pid
+        while true; do
+            echo "I am alive!" >> /tmp/my_process
+            sleep 2
+        done
+    ' &
+
+    echo "manage_my_process started"
+}
+
+stop_process() {
+    if [ -f "$PID_FILE" ]; then
+        kill "$(cat "$PID_FILE")" && rm -f "$PID_FILE"
+        echo "manage_my_process stopped"
+    else
+        echo "manage_my_process is not running"
+        exit 1
+    fi
+}
+
+case "$1" in
+    start)
+        start_process
+        ;;
+        
+    stop)
+        stop_process
+        ;;
+        
+    restart)
+        stop_process > /dev/null 2>&1
+        start_process > /dev/null 2>&1
+        echo "manage_my_process restarted"
+        ;;
+        
+    *)
+        echo "Usage: manage_my_process {start|stop|restart}"
+        exit 1
+        ;;
+esac
