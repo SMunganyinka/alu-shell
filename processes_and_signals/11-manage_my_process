@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Manages "my process"
 
-
 PID_FILE="/var/run/my_process.pid"
-PROCESS_SCRIPT="/path/to/manage_my_process"  # Replace with actual path
+PROCESS_SCRIPT="/path/to/manage_my_process.sh"
 
 case "$1" in
     start)
@@ -11,15 +10,23 @@ case "$1" in
             echo "manage_my_process is already running"
             exit 1
         fi
+        # Run the process in the background
         nohup bash "$PROCESS_SCRIPT" &> /dev/null &
-        echo $! > "$PID_FILE"
+        echo $! > "$PID_FILE"  # Save the PID to the PID file
         echo "manage_my_process started"
         ;;
 
     stop)
         if [ -f "$PID_FILE" ]; then
-            kill "$(cat "$PID_FILE")" && rm -f "$PID_FILE"
-            echo "manage_my_process stopped"
+            # Kill the process and remove the PID file
+            PID=$(cat "$PID_FILE")
+            if kill "$PID" 2>/dev/null; then
+                rm -f "$PID_FILE"  # Remove the PID file
+                echo "manage_my_process stopped"
+            else
+                echo "Failed to stop manage_my_process (process may not exist)"
+                exit 1
+            fi
         else
             echo "manage_my_process is not running"
             exit 1
@@ -27,8 +34,8 @@ case "$1" in
         ;;
 
     restart)
-        $0 stop > /dev/null 2>&1
-        $0 start > /dev/null 2>&1
+        $0 stop  # Stop the process
+        $0 start  # Start the process
         echo "manage_my_process restarted"
         ;;
 
@@ -37,3 +44,4 @@ case "$1" in
         exit 1
         ;;
 esac
+
