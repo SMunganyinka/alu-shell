@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# This script demonstrates handling different signals and creating/removing a PID file.
+
+# Create the PID file
+echo $$ > /var/run/myscript.pid  # Store the script's PID in /var/run/myscript.pid
+
+# Function to handle SIGTERM
+handle_sigterm() {
+    echo "I hate the kill command"
+}
+
+# Function to handle SIGINT
+handle_sigint() {
+    echo "Y U no love me?!"
+}
+
+# Function to clean up and exit on SIGQUIT or SIGTERM
+cleanup() {
+    rm -f /var/run/myscript.pid  # Remove the PID file
+    exit 0  # Terminate the script
+}
+
+# Trap the signals
+trap handle_sigterm SIGTERM
+trap handle_sigint SIGINT
+trap cleanup SIGQUIT SIGTERM
+
+# Display "To infinity and beyond" indefinitely
+while true; do
+    echo "To infinity and beyond"
+    sleep 2
+done
